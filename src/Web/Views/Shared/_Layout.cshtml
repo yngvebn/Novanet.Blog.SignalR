@@ -1,0 +1,16 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <title>SignalR Demo</title>
+    <script src="~/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-1.0.1.min.js"></script>
+    <script src="~/Scripts/handlebars.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+</head>
+<body>
+	@RenderBody()
+    
+    @RenderSection("scripts", false)
+</body>
+</html>

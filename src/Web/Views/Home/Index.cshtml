@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<div id="returnedData">
+
+</div>
+
+@section scripts
+{
+    
+<script id="entry-template" type="text/x-handlebars-template">
+      <ul class="people_list">
+      {{#each People}}
+      <li>{{Name}}</li>
+      {{/each}}
+    </ul>
+</script>
+    <script>
+        $(function () {
+
+            $.getJSON("/home/getPeople", function (res) {
+                var source = $("#entry-template").html();
+                var template = Handlebars.compile(source);
+                var html = template(res);
+                $("#returnedData").html(html);
+            });
+        });
+    </script>
+}
