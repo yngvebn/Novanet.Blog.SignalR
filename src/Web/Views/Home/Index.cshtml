@@ -4,27 +4,33 @@
 
 <h2>Index</h2>
 <div id="returnedData">
-
 </div>
-
+<button id="getData">
+    Get Data
+</button>
 @section scripts
 {
-    
-<script id="entry-template" type="text/x-handlebars-template">
-      <ul class="people_list">
-      {{#each People}}
-      <li>{{Name}}</li>
-      {{/each}}
-    </ul>
-</script>
+
+    <script id="entry-template" type="text/x-handlebars-template">
+        <ul class="people_list">
+            {{#each People}}
+            <li>{{Name}}</li>
+            {{/each}}
+        </ul>
+    </script>
     <script>
         $(function () {
 
-            $.getJSON("/home/getPeople", function (res) {
+            $("#getData").click(function () {
                 var source = $("#entry-template").html();
                 var template = Handlebars.compile(source);
-                var html = template(res);
-                $("#returnedData").html(html);
+
+                $.connection.peopleHub.server.getPeople().done(function (data) {
+                    var html = template(data);
+                    $("#returnedData").html(html);
+                }).fail(function (data) {
+                    console.log(data);
+                });
             });
         });
     </script>

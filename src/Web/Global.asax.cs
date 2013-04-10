@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Microsoft.AspNet.SignalR;
+using Web.App_Start;
 
 namespace Web
 {
@@ -14,7 +16,11 @@ namespace Web
     {
         protected void Application_Start()
         {
-            RouteTable.Routes.MapHubs();
+            GlobalHost.DependencyResolver = new SignalRNinjectDependencyResolver(NinjectWebCommon.Kernel);
+
+            RouteTable.Routes.MapHubs(new HubConfiguration(){
+                Resolver = new SignalRNinjectDependencyResolver(NinjectWebCommon.Kernel)
+            });            
             AreaRegistration.RegisterAllAreas();
 
             WebApiConfig.Register(GlobalConfiguration.Configuration);

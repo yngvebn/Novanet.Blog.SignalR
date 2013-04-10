@@ -11,6 +11,21 @@
 <body>
 	@RenderBody()
     
+    <script type="text/javascript">
+
+        var novanet = novanet || { };
+
+        novanet.signalR = {
+            available: false
+        };
+
+        $.connection.hub.start().done(function () {
+            novanet.signalR.availble = true;
+            novanet.signalR.hubs = $.connection;
+        });
+
+    </script>
+
     @RenderSection("scripts", false)
 </body>
 </html>

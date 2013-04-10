@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNet.SignalR;
+using Ninject.Web.Mvc;
 using Web.Infrastructure.Repository;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(Web.App_Start.NinjectWebCommon), "Start")]
@@ -34,6 +38,12 @@ namespace Web.App_Start
         {
             bootstrapper.ShutDown();
         }
+
+        private static IKernel _kernel;
+        public static IKernel Kernel
+        {
+            get { return _kernel; }
+        }
         
         /// <summary>
         /// Creates the kernel that will manage your application.
@@ -46,6 +56,7 @@ namespace Web.App_Start
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
             
             RegisterServices(kernel);
+            _kernel = kernel;
             return kernel;
         }
 
@@ -57,5 +68,40 @@ namespace Web.App_Start
         {
             kernel.Bind<IPeopleRepository>().To<PeopleRepository>();
         }        
+    }
+
+    public class SignalRNinjectDependencyResolver : Microsoft.AspNet.SignalR.DefaultDependencyResolver
+    {
+
+        private readonly IKernel _kernel;
+
+        public SignalRNinjectDependencyResolver(IKernel kernel)
+        {
+
+            if (kernel == null)
+            {
+
+                throw new ArgumentNullException("kernel");
+
+            }
+
+            _kernel = kernel;
+
+        }
+
+        public override object GetService(Type serviceType)
+        {
+
+            return _kernel.TryGet(serviceType) ?? base.GetService(serviceType);
+
+        }
+
+        public override IEnumerable<object> GetServices(Type serviceType)
+        {
+
+            return _kernel.GetAll(serviceType).Concat(base.GetServices(serviceType));
+
+        }
+
     }
 }
